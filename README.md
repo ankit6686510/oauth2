@@ -55,6 +55,7 @@ These are:
 * linkedin
 * microsoft
 * monzo
+* reddit
 * slack
 * soundcloud
 * spotify
@@ -107,6 +108,60 @@ var strURL = oLinkedIn.buildRedirectToAuthURL(
 	state = strState,
 	scope = aScope
 );
+```
+
+### Reddit
+
+#### Instantiation
+
+```
+var oReddit = new reddit(
+	client_id           = '1234567890',
+	client_secret       = 'XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXX',
+	redirect_uri        = 'http://redirect.fake'
+);
+```
+
+#### Authorization
+
+Reddit requires a `state` value for authorization to help protect against CSRF attacks and a `scope` array for API access permissions.
+
+Required parameters are:
+
+* `scope` - Array of permission scopes
+* `state` - Unique string to prevent CSRF attacks
+
+Optional parameters are:
+
+* `duration` - Either 'temporary' or 'permanent' (defaults to 'temporary')
+* `compact` - Boolean to use mobile-friendly authorization page (defaults to false)
+
+Available scope values include: `identity`, `edit`, `flair`, `history`, `modconfig`, `modflair`, `modlog`, `modposts`, `modwiki`, `mysubreddits`, `privatemessages`, `read`, `report`, `save`, `submit`, `subscribe`, `vote`, `wikiedit`, `wikiread`.
+
+```
+var strState = createUUID();
+var aScope = [
+	'identity',
+	'read',
+	'mysubreddits'
+];
+var strURL = oReddit.buildRedirectToAuthURL(
+	scope = aScope,
+	state = strState,
+	duration = 'permanent'
+);
+```
+
+#### Token Management
+
+Reddit supports token refresh and revocation:
+
+```
+// Refresh access token
+var refreshResponse = oReddit.refreshAccessTokenRequest( refresh_token = 'your_refresh_token' );
+
+// Revoke token
+var revokeResponse = oReddit.revokeToken( token = 'your_access_token' );
 ```
 
 ### Google
